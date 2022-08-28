@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clock</title>
+  </head>
+
+  <body>
+    
+    <style>
+      :root {
+        --clock-size: 53rem;
+      }
+
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Roboto+Condensed&family=Roboto+Slab:wght@400;500;700&display=swap');
+
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: 'Popping', sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        /* align-items: center; */
+        min-height: 100vh;
+        background: black;
+        overflow: hidden;
+      }
+
+      .container {
+        position: relative;
+        /* width: 100vw;
+        height: 100vh; */
+      }
+
+      .clock {
+        position: absolute;
+        top: 1rem;
+        right: -28rem;
+        width: var(--clock-size);
+        height: var(--clock-size);
+        margin-top: 0;
+        background: #175eaf6b;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        /* box-shadow: 10px 50px 70px rgba(0, 0, 0, 0.25),
+          inset 5px 5px 10px rgba(0, 0, 0, 0.5),
+          inset 5px 5px 20px rgba(0, 0, 0, 0.2),
+          inset -5px -5px 15px rgba(0, 0, 0, 0.75); */
+        isolation: isolate;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .clock::before {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #2f363e;
+        border: 3px solid #fff;
+        border-radius: 50%;
+        z-index: 10000000;
+      }
+      .clock span {
+        position: absolute;
+        inset: 20px;
+        color: #fff;
+        text-align: center;
+        /* 360 / 12 = 30deg  */
+        transform: rotate(calc(30deg * var(--i)));
+      }
+
+      .clock span b {
+        font-size: 2em;
+        opacity: 0.75;
+        font-weight: 600;
+        display: inline-block;
+        transform: rotate(calc(-30deg * var(--i)));
+      }
+      /* internal circel */
+      .circle {
+        position: absolute;
+        width: calc(var(--clock-size) / 1.25);
+        height: calc(var(--clock-size) / 1.25);
+        border: 2px solid rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        z-index: 10;
+      }
+
+      .circle i {
+        position: absolute;
+        width: 6px;
+        height: 50%;
+        background-color: var(--clr-hand);
+        opacity: 0.75;
+        transform-origin: bottom;
+        transform: scaleY(0.69);
+      }
+      .circle:nth-child(1) i {
+        width: 2px;
+      }
+      .circle:nth-child(2) i {
+        width: 6px;
+      }
+
+      .circle.circle2 {
+        width: calc(var(--clock-size) / 1.5);
+        height: calc(var(--clock-size) / 1.5);
+        z-index: 9;
+      }
+
+      .circle.circle3 {
+        width: calc(var(--clock-size) / 1.8);
+        height: calc(var(--clock-size) / 1.8);
+        z-index: 8;
+      }
+
+      .circle::before {
+        content: '';
+        position: absolute;
+        top: -8.5px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background-color: var(--clr-hand);
+        box-shadow: 0 0 20px var(--clr-hand), 0 0 60px var(--clr-hand);
+      }
+
+      /* digital clock style */
+      .time {
+        --pos-top: -12;
+        --pos-left: -1.8;
+        position: absolute;
+        top: calc(var(--clock-size) / var(--pos-top));
+        left: calc(var(--clock-size) / var(--pos-left));
+        display: flex;
+        font-size: 3em;
+        font-weight: 800;
+        /* position: relative; */
+        width: 700px;
+        height: 700px;
+        transform: rotateZ(239deg);
+        margin-top: 0px;
+        margin-left: -180px;
+        /* border-radius: 50%; */
+      }
+
+      .time span {
+        position: absolute;
+        color: var(--clr-hand);
+        inset: 20px 20px -290px 20px;
+        width: 4rem;
+        text-align: center;
+      }
+
+      .time span:nth-of-type(1) {
+        transform: rotate(calc(34deg));
+      }
+
+      .time span:nth-of-type(2) {
+        transform: rotate(calc(50deg));
+      }
+
+      .time span:nth-of-type(3) {
+        transform: rotate(calc(67deg));
+      }
+
+      .time span:nth-of-type(4) {
+        transform: rotate(calc(76deg));
+      }
+
+      .time .ampm {
+        font-size: x-large;
+        font-weight: 500;
+      }
+
+      .time span:nth-child(1)::after,
+      .time span:nth-child(2)::after {
+        content: ':';
+        position: absolute;
+        right: -37px;
+        top: 0px;
+        transform: rotate(14deg);
+      }
+      .time span:last-child {
+        font-size: 0.5em;
+        /* display: flex; */
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+      }
+
+      .time span:nth-child(2)::after {
+        animation: clock-pulse 1s steps(1) infinite;
+      }
+
+      @keyframes clock-pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* days dates */
+
+      .date {
+        --pos-top: -10px;
+        --pos-left: -120px;
+        position: absolute;
+        top: var(--pos-top);
+        left: var(--pos-left);
+        display: flex;
+        font-size: 4em;
+        font-weight: 800;
+        /* position: relative; */
+        width: 900px;
+        height: 900px;
+        transform: rotateZ(-120deg);
+        margin-bottom: 0px;
+        margin-right: -180px;
+        /* border-radius: 50%; */
+      }
+
+      .date svg {
+        color: #fff;
+
+        height: 800px;
+        width: 800px;
+      }
+    </style>
+    <div class="container">
+      <div class="clock">
+        <div class="circle" id="sec" style="--clr-hand: #04fc43;">
+          <i></i>
+        </div>
+        <div class="circle circle2" id="min" style="--clr-hand: #fee800;">
+          <i></i>
+        </div>
+        <div class="circle circle3" id="hours" style="--clr-hand: #ff2972;">
+          <i></i>
+        </div>
+
+        <span style="--i: 1;"><b>1</b></span>
+        <span style="--i: 2;"><b>2</b></span>
+        <span style="--i: 3;"><b>3</b></span>
+        <span style="--i: 4;"><b>4</b></span>
+        <span style="--i: 5;"><b>5</b></span>
+        <span style="--i: 6;"><b>6</b></span>
+        <span style="--i: 7;"><b>7</b></span>
+        <span style="--i: 8;"><b>8</b></span>
+        <span style="--i: 9;"><b>9</b></span>
+        <span style="--i: 10;"><b>10</b></span>
+        <span style="--i: 11;"><b>11</b></span>
+        <span style="--i: 12;"><b>12</b></span>
+      </div>
+
+      <!-- digital clock -->
+
+      <div id="time" class="time">
+        <span id="dHours" style="--clr-hand: #ff2972; --d: 1;" class="d1">
+          <b>00</b>
+        </span>
+        <span id="dMinutes" style="--clr-hand: #fee800; --d: 2;" class="d2">
+          <b>00</b>
+        </span>
+        <span id="dSeconds" style="--clr-hand: #04fc43; --d: 3;" class="d3">
+          <b>00</b>
+        </span>
+        <span id="ampm" class="ampm" style="--d: 4;"><b>AM</b></span>
+      </div>
+
+      <!-- date and days -->
+
+      <div id="date" class="date">
+        <svg viewBox="0 0 900 900">
+          <defs>
+            <linearGradient id="rainbow" x1="0" x2="0" y1="0" y2="100%" gradientUnits="userSpaceOnUse" >
+              <stop stop-color="#FF5B99" offset="0%"/>
+              <stop stop-color="#FF5447" offset="20%"/>
+              <stop stop-color="#FF7B21" offset="40%"/>
+              <stop stop-color="#EAFC37" offset="60%"/>
+              <stop stop-color="#4FCB6B" offset="80%"/>
+              <stop stop-color="#51F7FE" offset="100%"/> 
+            </linearGradient>
+          </defs>
+          <path
+            id="curve"
+            fill="transparent"
+            d=" M 100, 200
+          a 150,180 0 1,0 900,0"
+          />
+          <text width="900">
+            <textPath id="dateText" xlink:href="#curve" fill="url(#rainbow)">
+              
+            </textPath>
+          </text>
+        </svg>
+      </div>
+    </div>
+
+    <script>
+      let hours = document.getElementById('hours')
+      let min = document.getElementById('min')
+      let sec = document.getElementById('sec')
+
+      //   digital clock
+      let dHours = document.getElementById('dHours')
+      let dMinutes = document.getElementById('dMinutes')
+      let dSeconds = document.getElementById('dSeconds')
+      let dAmPm = document.getElementById('ampm')
+
+      // -------------
+
+      //date
+
+      let dateText = document.getElementById('dateText')
+
+      
+
+      setInterval(() => {
+        
+        let day = new Date()
+        let hh = day.getHours() * 30
+        // hour is multiplied by 30 because for 1 hour hand needs to rotate 15 deg and it 24 format so its need 2 full rotation in 24 hour
+        let mm = day.getMinutes() * 6
+        let ss = day.getSeconds() * 6
+
+        // console.log(`hh: ${hh} mm: ${mm} ss: ${ss}`)
+
+        hours.style.transform = `rotateZ(${hh + mm / 12}deg)`
+        min.style.transform = `rotateZ(${mm}deg)`
+        sec.style.transform = `rotateZ(${ss}deg)`
+
+        //   digital clock
+        let h = day.getHours()
+        let m = day.getMinutes()
+        let s = day.getSeconds()
+
+        let ampm = h >= 12 ? 'PM' : 'AM'
+
+        // 24h format to 12h
+        h = h > 12 ? h - 12 : h
+
+        // appending zero
+        h = h < 10 ? '0' + h : h
+        m = m < 10 ? '0' + m : m
+        s = s < 10 ? '0' + s : s
+
+        dHours.innerHTML = `<b>${h}</b>`
+        dMinutes.innerHTML = `<b>${m}</b>`
+        dSeconds.innerHTML = `<b>${s}</b>`
+        dAmPm.innerHTML = `<b>${ampm}</b>`
+
+        //----- Date ------
+      
+        
+        date = day.toDateString() 
+        
+        if (date!==  dateText.innerHTML) {
+          dateText.innerHTML = date
+          
+        }
+
+      })
+
+    </script>
+  </body>
+</html>
